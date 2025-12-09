@@ -24,13 +24,25 @@ def main():
 
     evaluate_baseline(x_train, y_train, x_val, y_val, x_test, y_test, task_name=args.task_name,)
 
-    # k_values = [1, 3, 5, 7, 11, 15]
+    k_values = [1]
+    metric = "manhattan"
 
-    # scores = knn_breed.grid_search(x_test[:300], y_test[:300], x_train[:2000], y_train[:2000], k_values)
+    scores = knn_breed.grid_search(x_test[:1000], y_test[:1000], x_train[:9000], y_train[:9000], k_values, metric)
     # scores = knn_breed.grid_search(x_test, y_test, x_train[:2000], y_train[:2000], k_values)
 
-    # for k, acc in scores.items():
-    #     print(f"Accuracy for k = {k} is {acc}")
+    for k, acc in scores.items():
+        print(f"Accuracy for k = {k} is {acc}")
+
+    best_k = max(scores, key=scores.get)
+    best_val = scores[best_k]
+
+    print(f"Best k = {best_k}, best value = {best_val}")
+
+    test_acc = knn_breed.evaluate(x_test, y_test, x_train[:4000], y_train[:4000], k = best_k, metric = metric)
+
+    print(f"Test accuracy = {test_acc}")
+
+
 
     # # depth_values = [5, 10, 20]
     # # criteria = "gini"
@@ -52,34 +64,37 @@ def main():
 
     # # print(f"Decision Tree test accuracy: {test_acc}")
 
-    # depth_values = [5, 10, 20, None]
-    depth_values = [None]
 
-    criteria = "gini"
-    est_values = [600]
 
-    # best_depth, best_est, best_val_acc, scores = random_forest_breed.grid_search(x_val[:300], y_val[:300], x_train[:2000], y_train[:2000], 
-    #                                                                             depth_values, est_values, criteria)
+
+    # # depth_values = [5, 10, 20, None]
+    # depth_values = [None]
+
+    # criteria = "gini"
+    # est_values = [600]
+
+    # # best_depth, best_est, best_val_acc, scores = random_forest_breed.grid_search(x_val[:300], y_val[:300], x_train[:2000], y_train[:2000], 
+    # #                                                                             depth_values, est_values, criteria)
     
-    best_depth, best_est, best_val_acc, scores = random_forest_breed.grid_search(x_val, y_val, x_train, y_train, 
-                                                                                depth_values, est_values, criteria)
+    # best_depth, best_est, best_val_acc, scores = random_forest_breed.grid_search(x_val, y_val, x_train, y_train, 
+    #                                                                             depth_values, est_values, criteria)
 
 
-    print("before best_model")
+    # print("before best_model")
 
-    for params, acc in scores.items():
-        print(f"depth = {params[0]}, estimators = {params[1]}, accuracy = {acc}")
+    # for params, acc in scores.items():
+    #     print(f"depth = {params[0]}, estimators = {params[1]}, accuracy = {acc}")
 
-    print(f"Best parameters: depth = {best_depth}, estimators = {best_est}") 
-    print(f"Best validation accuracy = {best_val_acc}")
+    # print(f"Best parameters: depth = {best_depth}, estimators = {best_est}") 
+    # print(f"Best validation accuracy = {best_val_acc}")
 
-    # best_model = random_forest_breed.train(x_train[:2000], y_train[:2000], max_depth=best_depth, criterion=criteria, n_estimators = best_est)
+    # # best_model = random_forest_breed.train(x_train[:2000], y_train[:2000], max_depth=best_depth, criterion=criteria, n_estimators = best_est)
 
-    best_model = random_forest_breed.train(x_train, y_train, max_depth=best_depth, criterion=criteria, n_estimators = best_est)
+    # best_model = random_forest_breed.train(x_train, y_train, max_depth=best_depth, criterion=criteria, n_estimators = best_est)
 
-    test_acc = random_forest_breed.evaluate(x_test, y_test, best_model)
+    # test_acc = random_forest_breed.evaluate(x_test, y_test, best_model)
 
-    print(f"RF with test accuracy: {test_acc}")
+    # print(f"RF with test accuracy: {test_acc}")
     
 
 if __name__ == "__main__":
