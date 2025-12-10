@@ -1,6 +1,8 @@
 import numpy as np
 import queue
 from collections import Counter
+import csv
+import matplotlib.pyplot as plt
 
 # KNN for binary dog vs non-dog classification
 
@@ -61,4 +63,20 @@ def grid_search(x_val, y_val, X, Y, k_values):
         acc = evaluate(x_val, y_val, X, Y, k)
         scores[k] = acc
         print(f"Validation accuracy for k = {k}: {acc}")
+
+    with open("knn_binary_results.csv", mode="w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["k", "validation_accuracy"])
+        for k in k_values:
+            writer.writerow([k, scores[k]])
+
+    plt.figure(figsize=(8, 5))
+    plt.plot(k_values, [scores[k] for k in k_values], marker="o")
+    plt.xlabel("k")
+    plt.ylabel("Validation Accuracy")
+    plt.title("KNN: k vs Validation Accuracy")
+    plt.grid(True, linestyle="--", alpha=0.6)
+    plt.tight_layout()
+    plt.savefig("knn_binary_k_vs_accuracy.png")
+
     return scores
